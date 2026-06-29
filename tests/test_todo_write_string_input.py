@@ -39,7 +39,9 @@ def load_course_module(module_name: str, module_path: Path, temp_cwd: Path):
     previous_cwd = Path.cwd()
     previous_model_id = os.environ.get("MODEL_ID")
 
-    spec = importlib.util.spec_from_file_location(f"{module_name}_todo_test", module_path)
+    spec = importlib.util.spec_from_file_location(
+        f"{module_name}_todo_test", module_path
+    )
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Unable to load {module_path}")
     module = importlib.util.module_from_spec(spec)

@@ -66,7 +66,10 @@ def load_module(name: str, path: Path, temp_cwd: Path):
 
 
 def assistant_text():
-    return {"role": "assistant", "content": [types.SimpleNamespace(type="text", text="ok")]}
+    return {
+        "role": "assistant",
+        "content": [types.SimpleNamespace(type="text", text="ok")],
+    }
 
 
 def user_text():
@@ -101,7 +104,10 @@ def assert_no_orphan_tool_results(testcase, messages):
         content = message.get("content")
         if message.get("role") != "user" or not isinstance(content, list):
             continue
-        if not any(isinstance(block, dict) and block.get("type") == "tool_result" for block in content):
+        if not any(
+            isinstance(block, dict) and block.get("type") == "tool_result"
+            for block in content
+        ):
             continue
         testcase.assertGreater(idx, 0)
         testcase.assertTrue(message_has_tool_use(messages[idx - 1]), messages)
@@ -193,7 +199,9 @@ class CompactionToolPairTests(unittest.TestCase):
 
         for name, path in MODULES.items():
             with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
-                module = load_module(f"{name}_reactive_oldhist_under_test", path, Path(tmp))
+                module = load_module(
+                    f"{name}_reactive_oldhist_under_test", path, Path(tmp)
+                )
                 module.write_transcript = lambda _messages: Path("transcript.jsonl")
                 captured = {}
 
@@ -228,7 +236,9 @@ class CompactionToolPairTests(unittest.TestCase):
 
         for name, path in MODULES.items():
             with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
-                module = load_module(f"{name}_reactive_pairscope_under_test", path, Path(tmp))
+                module = load_module(
+                    f"{name}_reactive_pairscope_under_test", path, Path(tmp)
+                )
                 module.write_transcript = lambda _messages: Path("transcript.jsonl")
                 captured = {}
 
@@ -246,8 +256,12 @@ class CompactionToolPairTests(unittest.TestCase):
 
     def test_s20_has_tool_use_still_accepts_content_blocks(self):
         with tempfile.TemporaryDirectory() as tmp:
-            module = load_module("s20_has_tool_use_under_test", MODULES["s20"], Path(tmp))
-            self.assertTrue(module.has_tool_use([types.SimpleNamespace(type="tool_use")]))
+            module = load_module(
+                "s20_has_tool_use_under_test", MODULES["s20"], Path(tmp)
+            )
+            self.assertTrue(
+                module.has_tool_use([types.SimpleNamespace(type="tool_use")])
+            )
             self.assertFalse(module.has_tool_use([types.SimpleNamespace(type="text")]))
 
 
